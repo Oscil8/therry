@@ -3,6 +3,7 @@ require 'rest-client'
 require 'json'
 
 require 'therry/metrics'
+require 'therry/values'
 
 module Therry
   class Web < Sinatra::Base
@@ -22,6 +23,10 @@ module Therry
 
     get '/search/?' do
       Metric.find(params[:pattern]).to_json
+    end
+
+    get '/values/?' do # values for last hour, by default
+      Value.top_n(params[:pattern], :n => params[:n]).to_json
     end
 
     get '/health/?' do

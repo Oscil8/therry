@@ -13,18 +13,25 @@ class Metric
    results 
   end
 
+  def self.values(search, opts={})
+  end
+
   def self.load
     self.update
   end
 
   def self.update
+    response = RestClient.get("#{base_url}/metrics/index.json")
+    @@paths = JSON.parse(response)
+  end
+  
+  def self.base_url
     u = URI.parse(ENV['GRAPHITE_URL'])
     if (!ENV['GRAPHITE_USER'].empty? && !ENV['GRAPHITE_PASS'].empty?)
       u.user = ENV['GRAPHITE_USER']
       u.password = CGI.escape(ENV['GRAPHITE_PASS'])
     end
-    response = RestClient.get("#{u.to_s}/metrics/index.json")
-    @@paths = JSON.parse(response)
+    u.to_s
   end
 end
 
